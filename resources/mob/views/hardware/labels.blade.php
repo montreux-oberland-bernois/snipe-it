@@ -40,7 +40,6 @@ $qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='')
         page-break-after:always;
     }
     .asset_name {
-        text-align: right;
         text-transform: lowercase;
         width: auto;
     }
@@ -91,7 +90,7 @@ $qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='')
                         </div>
                     @endif
                 </td>
-                <td><img src="/uploads/{{ $snipeSettings->logo }}" width="50" style="display:inline;float:left;"/></td>
+                <td><img src="/uploads/{{ $snipeSettings->logo }}" width="60" style="display:inline;float:left;"/></td>
             </tr>
             <tr>
                 <td>
@@ -113,7 +112,7 @@ $qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='')
             <tr>
                 <td class="asset_name">
                     @if (isset($asset->_snipeit_nom_du_pc_2) && ($asset->_snipeit_nom_du_pc_2!=''))
-                        <div class="pull-left">
+                        <div>
                             {{ $asset->_snipeit_nom_du_pc_2 }}
                         </div>
                     @endif
@@ -121,10 +120,6 @@ $qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='')
             </tr>
         </table>
     </div>
-    @if ($count % $settings->labels_per_page == 0)
-        <div class="page-break"></div>
-        <div class="next-padding">&nbsp;</div>
-    @endif
 @endforeach
 <script type="text/javascript">
     window.print();
