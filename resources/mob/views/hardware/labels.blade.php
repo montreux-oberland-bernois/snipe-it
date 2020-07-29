@@ -3,26 +3,26 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Labels</title>
-
 </head>
 <body>
-
-<?php
-$settings->labels_width = $settings->labels_width - $settings->labels_display_sgutter;
-$settings->labels_height = $settings->labels_height - $settings->labels_display_bgutter;
-// Leave space on bottom for 1D barcode if necessary
-$qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='') ? $settings->labels_height - .3 : $settings->labels_height - .3;
-?>
-
 <style>
     body {
         font-family: arial, helvetica, sans-serif;
-        font-size: 10px;
         display: block;
         margin: 0!important;
+        font-size: 14px;
     }
     div {
         display: block;
+    }
+    h1 {
+        color: white;
+        margin: 0;
+        text-align: center;
+        height: 50px;
+        font-size: 20px;
+        font-weight: 300;
+        line-height: 50px;
     }
     table {
         height: 10.5mm;
@@ -31,9 +31,31 @@ $qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='')
         text-align: start;
         border-spacing: 2px;
     }
+    header {
+        max-height: 150px;
+        position: relative;
+        background: #3c8dbc;
+    }
+    .close {
+        position: absolute;
+        top: 4px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+    .entrylabel {
+        padding : 4px;
+        height: 27.3mm !important;
+    }
     td {
         padding: 0 !important;
         vertical-align: top;
+    }
+    tr{
+        padding: 0 !important;
     }
 
     .page-break {
@@ -41,7 +63,12 @@ $qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='')
     }
     .asset_name {
         text-transform: lowercase;
+        font-size: 10px;
         width: auto;
+    }
+    .image {
+        -webkit-filter: brightness(100%); /* Safari 6.0 - 9.0 */
+        filter: brightness(0%);
     }
     div.qr_img {
         float: left;
@@ -49,9 +76,17 @@ $qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='')
     img.qr_img {
         height: 10mm;
     }
-    img.barcode {
+    img.qr_img_entry {
+        height: 24mm;
+        vertical-align: center;
+    }
+    img.barcode_entry {
         display:block;
-        height: 10mm;
+        height: 24mm;
+    }
+    img.barcode {
+    display:block;
+    height: 10mm;
     }
     .qr_text {
         font-family: arial, helvetica, sans-serif;
@@ -61,9 +96,43 @@ $qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='')
         word-wrap: break-word;
         word-break: break-all;
     }
+    .qr_text_entry .model_name_entry {
+        font-family: arial, helvetica, sans-serif;
+        font-size: 14px !important;
+        overflow: hidden !important;
+        display: block;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
     div.barcode_container {
         display: block;
         overflow: hidden;
+    }
+    #buttonentrylabel, #buttonA7label {
+        background-color: #307095;
+        border-color: #23536f;
+        color: #fff;
+        padding: 6px 12px;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 3px;
+        border: 1px solid transparent;
+        margin-left: 4px;
+    }
+    #buttonprint {
+        background-color: #d81b60;
+        border-color: #23536f;
+        color: #fff;
+        padding: 6px 12px;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 3px;
+        border: 1px solid transparent;
+    }
+    @media print {
+        .no-print {
+            display: none !important;
+        }
     }
     @if ($snipeSettings->custom_css)
         {{ $snipeSettings->show_custom_css() }}
@@ -72,57 +141,24 @@ $qr_size = ($settings->alt_barcode_enabled=='1') && ($settings->alt_barcode!='')
         margin: 0;
     }
 </style>
+<form action="?label=entry" method="post">
+    <input name="_token" type="hidden" value="{{ htmlentities($_POST['_token'], ENT_QUOTES, "UTF-8") }}">
+    <input name="bulk_actions" type="hidden" value="labels">
+    <input name="search" type="hidden" value="">
+    <input name="btSelectItem" type="hidden" value="on">
 
-@foreach ($assets as $asset)
-    <?php $count++; ?>
-    <div class="label">
-        <table>
-            <tr>
-                <td rowspan="3">
-                    @if ($settings->qr_code=='1')
-                        <div class="qr_img">
-                            <img src="./{{ $asset->id }}/qr_code" class="qr_img"/>
-                        </div>
-                    @endif
-                    @if ((($settings->alt_barcode_enabled=='1') && $settings->alt_barcode!=''))
-                        <div class="barcode_container">
-                            <img src="./{{ $asset->id }}/barcode" class="barcode"/>
-                        </div>
-                    @endif
-                </td>
-                <td><img src="/uploads/{{ $snipeSettings->logo }}" width="60" style="display:inline;float:left;"/></td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="qr_text">
-                        @if ($settings->qr_text!='')
-                            <div class="pull-left">
-                                <strong>{{ $settings->qr_text }}</strong>
-                                <br>
-                            </div>
-                        @endif
-                        @if (($settings->labels_display_tag=='1') && ($asset->asset_tag!=''))
-                            <div class="pull-left">
-                                {{ $asset->asset_tag }}
-                            </div>
-                        @endif
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="asset_name">
-                    @if (isset($asset->_snipeit_nom_du_pc_2) && ($asset->_snipeit_nom_du_pc_2!=''))
-                        <div>
-                            {{ $asset->_snipeit_nom_du_pc_2 }}
-                        </div>
-                    @endif
-                </td>
-            </tr>
-        </table>
-    </div>
-@endforeach
-<script type="text/javascript">
-    window.print();
+        @if (isset($_GET['label']) && $_GET['label'] == 'entry')
+            @include('hardware.entry')
+        @else
+            @include('hardware.device')
+        @endif
+    <button class="no-print" id="buttonprint" type="button">Imprimer</button>
+</form>
+<script>
+    let print = document.querySelector("#buttonprint");
+    print.onclick=function(){
+        window.print();
+    }
 </script>
 </body>
 </html>
