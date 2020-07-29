@@ -25,7 +25,7 @@
         line-height: 50px;
     }
     table {
-        height: 10.5mm;
+        height: 10mm;
         border-collapse: separate;
         box-sizing: border-box;
         text-align: start;
@@ -69,12 +69,15 @@
     .image {
         -webkit-filter: brightness(100%); /* Safari 6.0 - 9.0 */
         filter: brightness(0%);
+        padding-top: 2px;
     }
     div.qr_img {
         float: left;
+        height: 10mm;
     }
     img.qr_img {
         height: 10mm;
+        padding-top: 2px;
     }
     img.qr_img_entry {
         height: 24mm;

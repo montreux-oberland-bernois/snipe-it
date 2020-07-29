@@ -15,7 +15,7 @@
                     </div>
                 @endif
             </td>
-            <td><img src="/uploads/{{ $snipeSettings->logo }}" class="image" width="60" style="display:inline;float:left;"/></td>
+            <td><img src="/uploads/{{ $snipeSettings->logo }}" class="image" width="50" style="display:inline;float:left;"/></td>
         </tr>
         <tr>
             <td>
